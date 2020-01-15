@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-    //FUNCTIONS
 
+    //FUNCTIONS
+    //функция вывода товаров на страницу (в будущем обработчик AJAX)
     const createGoodsCard = (id, title, price, img) => {
         const card = document.createElement('div');
         card.className = 'card-wrapper col-12 col-md-6 col-lg-4 col-xl-3 pb-3';
@@ -11,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             </div>
                             <div class="card-body justify-content-between">
                                 <a href="#" class="card-title">${title}</a>
-                                <div class="card-price">${price}</div>
+                                <div class="card-price">${price} ₽</div>
                                 <div>
                                     <button class="card-add-cart" data-goods-id="${id}">Добавить в корзину</button>
                                 </div>
@@ -21,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     };
     
     //Показ окна корзины
-    const openCart = () => {
+    const openCart = (event) => {
+        event.preventDefault();
         cart.style.display = 'flex';
     }
 
@@ -40,14 +42,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         else {
-            cart.style.display = 'flex'; 
+            cart.style.display = 'none'; 
         }
+    }
+
+    //Отмена перехода по ссылке на кнопку "Добавить в мои желания"
+    const exampleFunc = (event) => {
+        event.preventDefault();
     }
 
     // END FUNCTIONS
 
     const cartBtn = document.getElementById('cart'); //кнопка открытия корзины
-    const wishListBtn = document.getElementById('wishlist'); //кнопка открытия "Мои желания"
+    const wishListBtn = document.getElementById('wishlist');//кнопка открытия "Мои желания"
     const goodsWrapper = document.querySelector('.goods-wrapper'); // Враппер товаров
     const cart = document.querySelector('.cart'); //сама корзина
 
@@ -57,8 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
         goodsWrapper.appendChild(createGoodsCard(i, 'AOKFLY BR 2205', 1517.76, 'img/temp/flamingo.jpg'));
     }
 
+    document.addEventListener('keydown', closeCartEscape)
     cartBtn.addEventListener('click', openCart);
     cart.addEventListener('click', closeCart);
-
-    document.addEventListener('keydown', closeCartEscape)
+    wishListBtn.addEventListener('click', exampleFunc);
+    
 });
