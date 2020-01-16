@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
 
+    const cartBtn = document.getElementById('cart'); //кнопка открытия корзины
+    const wishListBtn = document.getElementById('wishlist');//кнопка открытия "Мои желания"
+    const goodsWrapper = document.querySelector('.goods-wrapper'); // Враппер товаров
+    const cart = document.querySelector('.cart'); //сама корзина
+
     //FUNCTIONS
     //функция вывода товаров на страницу (в будущем обработчик AJAX)
     const createGoodsCard = (id, title, price, img) => {
@@ -29,20 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Скрытие окна корзины
     const closeCart = (event) => {
-        if (event.target.classList.contains('cart') || event.target.classList.contains('cart-close')) {
+        if (event.target.classList.contains('cart') || event.target.classList.contains('cart-close') || (event.ketCode == 27 && event.code == 'Escape')) {
             cart.style.display = 'none';
-        }
-    }
-
-    const closeCartEscape = (event) => {
-        if (cart.style.display == 'flex') {
-            if (event.code == 'Escape') {
-                cart.style.display = 'none';
-            }
-        }
-
-        else {
-            cart.style.display = 'none'; 
         }
     }
 
@@ -51,12 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
     }
 
-    // END FUNCTIONS
-
-    const cartBtn = document.getElementById('cart'); //кнопка открытия корзины
-    const wishListBtn = document.getElementById('wishlist');//кнопка открытия "Мои желания"
-    const goodsWrapper = document.querySelector('.goods-wrapper'); // Враппер товаров
-    const cart = document.querySelector('.cart'); //сама корзина
+    // END FUNCTIONS 
 
     let price = 123124;
 
@@ -64,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
         goodsWrapper.appendChild(createGoodsCard(i, 'AOKFLY BR 2205', 1517.76, 'img/temp/flamingo.jpg'));
     }
 
-    document.addEventListener('keydown', closeCartEscape)
+    document.addEventListener('keydown', closeCart)
     cartBtn.addEventListener('click', openCart);
     cart.addEventListener('click', closeCart);
     wishListBtn.addEventListener('click', exampleFunc);
