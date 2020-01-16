@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const wishListBtn = document.getElementById('wishlist');//кнопка открытия "Мои желания"
     const goodsWrapper = document.querySelector('.goods-wrapper'); // Враппер товаров
     const cart = document.querySelector('.cart'); //сама корзина
+    const category = document.querySelector('.category'); //Див категорий
 
     //FUNCTIONS
     //функция вывода товаров на страницу (в будущем обработчик AJAX)
@@ -25,17 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>`
         return card;
     };
-    
+
     //Показ окна корзины
     const openCart = (event) => {
         event.preventDefault();
         cart.style.display = 'flex';
+        document.addEventListener('keydown', closeCart);
     }
 
     //Скрытие окна корзины
     const closeCart = (event) => {
         if (event.target.classList.contains('cart') || event.target.classList.contains('cart-close') || (event.ketCode == 27 && event.code == 'Escape')) {
             cart.style.display = 'none';
+            document.removeEventListener('keydown', closeCart);
         }
     }
 
@@ -44,17 +47,46 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
     }
 
-    // END FUNCTIONS 
-
-    let price = 123124;
-
-    for (let i=1; i < 6; i++) {
-        goodsWrapper.appendChild(createGoodsCard(i, 'AOKFLY BR 2205', 1517.76, 'img/temp/flamingo.jpg'));
+    const renderCard = (items) => {
+        goodsWrapper.textContent = '';
+        items.forEach( ({ id, title, price, imgMin }) => {
+            goodsWrapper.appendChild(createGoodsCard(id, title, price, imgMin));
+        });
     }
 
-    document.addEventListener('keydown', closeCart)
+    const getGoods = (renderCard, filter) => {
+        //запрос к БД
+        fetch('db/db.json') //API
+            .then( (response) => { return (response.json()); })
+            .then(filter)
+            .then(renderCard);
+    }
+
+    const randomSort = (item) => {
+        return item.sort( () => Math.random() - 0.5);
+    }
+
+    const chooseCategory = (event) => {
+        event.preventDefault();
+        const target = event.target;
+
+        if (target.classList.contains('category-item')) {
+            const cat = event.target.dataset.category;
+
+            console.log(event.target.dataset.category);
+
+            getGoods(renderCard, goods => goods.filter((item) => item.category.includes(cat)));
+            }
+        };
+
+    // END FUNCTIONS 
+
     cartBtn.addEventListener('click', openCart);
     cart.addEventListener('click', closeCart);
     wishListBtn.addEventListener('click', exampleFunc);
+
+    getGoods(renderCard, randomSort)
+
+    category.addEventListener('click', chooseCategory);
     
 });
