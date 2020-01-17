@@ -7,6 +7,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const category = document.querySelector('.category'); //Див категорий
 
     //FUNCTIONS
+
+    const createLoadGif = () => {
+        const loadGif = document.querySelector('.goods-wrapper').createElement('img');
+        loadGif.className = 'loadGif';
+        loadGif.setAttribute('src', 'img/103.gif');
+        return loadGif;
+    }
+
     //функция вывода товаров на страницу (в будущем обработчик AJAX)
     const createGoodsCard = (id, title, price, img) => {
         const card = document.createElement('div');
@@ -49,7 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderCard = (items) => {
         goodsWrapper.textContent = '';
-        console.log('render card', items);
+        //console.log('render card', items);
         items.forEach( ({ id, title, price, imgMin }) => {
             goodsWrapper.appendChild(createGoodsCard(id, title, price, imgMin));
         });
@@ -76,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
     // }
 
+    
+
     const getGoods = (renderCard, filter) => {
         const request = new XMLHttpRequest;
         const url = 'db/db.json';
@@ -85,7 +95,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         request.addEventListener('readystatechange', () => {
             if (request.readyState === 3) {
-                console.log('Гружу!')
+                console.log('Гружу!');
+                createLoadGif();
             }
 
             if(request.readyState === 4 && request.status === 200) {
@@ -99,30 +110,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const randomSort = (item) => {
-        console.log('random sort', item);
+        //console.log('random sort', item);
         return filteredItems = item.sort( () => Math.random() - 0.5);
     }
 
     const chooseCategory = (event) => {
         event.preventDefault();
         const target = event.target;
+        let data =[];
 
         if (target.classList.contains('category-item')) {
-            //const cat = event.target.dataset.category;
-            console.log('event.target.dataset.category: ', event.target.dataset.category);
-
-            //console.log(cat);
-
+            const category = target.dataset.category;
             getGoods(renderCard,
                 (goods) => {
                     goods.filter(
-                        (item) => {
-                            return filteredItems = item.category.includes(event.target.dataset.category)
-                    })
+                        (item) => { 
+                            if (item.category.includes(category) == true) {
+                                data.push(item);
+                            }     
+                    });
+                    return filteredItems = data;
                 }
             );
-         }
+        }
+        
     };
+
+    // getGoods(renderCard,
+    //     (goods) => {
+    //         goods.filter(
+    //             (item) => {
+    //                 if (item.category.includes(event.target.dataset.category) == true) {
+    //                     data.push(item);
+    //                 }
+    //             })
+
+    //         return filteredItems = data;
+    //     }
+    // );
 
     // END FUNCTIONS 
 
