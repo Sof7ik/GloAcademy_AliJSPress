@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //Скрытие окна корзины
     const closeCart = (event) => {
-        if (event.target.classList.contains('cart') || event.target.classList.contains('cart-close') || (event.ketCode == 27 && event.code == 'Escape')) {
+        if (event.target.classList.contains('cart') || event.target.classList.contains('cart-close') || (event.keyCode == 27 && event.code == 'Escape')) {
             cart.style.display = 'none';
             document.removeEventListener('keydown', closeCart);
         }
@@ -54,12 +54,49 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // const getGoods = (renderCard, filter) => {
+    //     //запрос к БД
+    //     fetch('db/db.json') //API
+    //     .then( (response) => { return (response.json()); })
+    //     .then(filter)
+    //     .then(renderCard)
+    // }
+
+    // const getGoods = (renderCard, filter) => {
+    //     //запрос к БД
+    //     setTimeout ( () => {
+    //         return fetch('db/db.json') //API
+    //         .then( (response) => { return (response.json()); })
+    //         .then(filter)
+    //         .then(renderCard),
+    //         document.getElementById('spinner').style.display = 'none',
+    //         console.log('Загрузка товара завершена');
+    //     }, 2000)
+        
+    // }
+
     const getGoods = (renderCard, filter) => {
-        //запрос к БД
-        fetch('db/db.json') //API
-            .then( (response) => { return (response.json()); })
-            .then(filter)
-            .then(renderCard);
+        const request = new XMLHttpRequest;
+        const url = '../db/db.json';
+
+        function onLoad(event) {
+            console.log(123);
+        }
+        request.onload = onLoad;
+
+        request.open('POST', url, true);
+        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        
+        request.addEventListener('readystatechange', () => {
+            if(request.readyState === 4 && request.status === 200) {
+                console.log(request.responseText);
+                const res = JSON.parse(request.responseText);
+                console.log(res);
+                renderCard;
+            }
+        })
+                   
+        request.send();
     }
 
     const randomSort = (item) => {
@@ -84,6 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
     cartBtn.addEventListener('click', openCart);
     cart.addEventListener('click', closeCart);
     wishListBtn.addEventListener('click', exampleFunc);
+
+    //foo()
 
     getGoods(renderCard, randomSort)
 
