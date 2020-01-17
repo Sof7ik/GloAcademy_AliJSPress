@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderCard = (items) => {
         goodsWrapper.textContent = '';
+        console.log('render card', items);
         items.forEach( ({ id, title, price, imgMin }) => {
             goodsWrapper.appendChild(createGoodsCard(id, title, price, imgMin));
         });
@@ -77,22 +78,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const getGoods = (renderCard, filter) => {
         const request = new XMLHttpRequest;
-        const url = '../db/db.json';
-
-        function onLoad(event) {
-            console.log(123);
-        }
-        request.onload = onLoad;
+        const url = 'db/db.json';
 
         request.open('POST', url, true);
         request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         
         request.addEventListener('readystatechange', () => {
+            if (request.readyState === 3) {
+                console.log('Гружу!')
+            }
+
             if(request.readyState === 4 && request.status === 200) {
-                console.log(request.responseText);
                 const res = JSON.parse(request.responseText);
-                console.log(res);
-                renderCard;
+                filter(res);
+                renderCard(filteredItems);
             }
         })
                    
@@ -100,7 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const randomSort = (item) => {
-        return item.sort( () => Math.random() - 0.5);
+        console.log('random sort', item);
+        return filteredItems = item.sort( () => Math.random() - 0.5);
     }
 
     const chooseCategory = (event) => {
@@ -108,21 +108,27 @@ document.addEventListener('DOMContentLoaded', () => {
         const target = event.target;
 
         if (target.classList.contains('category-item')) {
-            const cat = event.target.dataset.category;
+            //const cat = event.target.dataset.category;
+            console.log('event.target.dataset.category: ', event.target.dataset.category);
 
-            console.log(event.target.dataset.category);
+            //console.log(cat);
 
-            getGoods(renderCard, goods => goods.filter((item) => item.category.includes(cat)));
-            }
-        };
+            getGoods(renderCard,
+                (goods) => {
+                    goods.filter(
+                        (item) => {
+                            return filteredItems = item.category.includes(event.target.dataset.category)
+                    })
+                }
+            );
+         }
+    };
 
     // END FUNCTIONS 
 
     cartBtn.addEventListener('click', openCart);
     cart.addEventListener('click', closeCart);
     wishListBtn.addEventListener('click', exampleFunc);
-
-    //foo()
 
     getGoods(renderCard, randomSort)
 
